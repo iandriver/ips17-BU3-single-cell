@@ -79,7 +79,7 @@ lower_bound <- 10^(mean(log10(pData(ips17_BU3_data)$Total_mRNAs)) - 2*sd(log10(p
 
 #plot mRNA expression by Nkx_group or other
 qplot(Total_mRNAs, data=pData(ips17_BU3_data), color=Nkx_group, geom="density") + geom_vline(xintercept=lower_bound) + geom_vline(xintercept=upper_bound)
-
+ggsave(file.path(new_dirname,paste(fname,"mRNA_dist_plot_byNKXGroup.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 6, height = 8, units = c("in"), dpi = 300)
 ips17_BU3_data <- ips17_BU3_data[,pData(ips17_BU3_data)$Total_mRNAs > lower_bound & pData(ips17_BU3_data)$Total_mRNAs < upper_bound]
 ips17_BU3_data <- detectGenes(ips17_BU3_data, min_expr = 0.1)
 

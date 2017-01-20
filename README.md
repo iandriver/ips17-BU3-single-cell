@@ -4,6 +4,8 @@ The data and associated scripts that were used to create the single cell figures
 in the paper "Prospective isolation and single cell profiling of NKX2-1+/CD47+
 human lung progenitors derived from pluripotent stem cells"
 
+Interactive version of the monocle data can be found here: https://iandriver.shinyapps.io/ips17-bu3_single_cell_data/
+
 Instructions
 -----
 Clone or download this repository and move working directory there:
@@ -35,3 +37,4 @@ Or simply load the existing monocle CellDataSet:
     ips17_BU3_data <- readRDS('kmeans2_new_allgene200.RDS')
 ```
 This can then be used for any plotting or analysis.
+Simple interactive plotting of this data can also be found here: https://iandriver.shinyapps.io/ips17-bu3_single_cell_data/

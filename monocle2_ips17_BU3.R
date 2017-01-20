@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 #R code for monocle2 ips17 BU3 single cell data Hawkins, et al.
 #also refer to the monocle2 vignette http://www.bioconductor.org/packages/release/bioc/vignettes/monocle/inst/doc/monocle-vignette.pdf
 
@@ -14,7 +15,7 @@ library(igraph)
 #provide path to modified plotting code https://github.com/iandriver/monocle-release/tree/master/R
 
 #provide name add on for file saveing
-fname="kmeans2_200_new2"
+fname="kmeans2_200_test"
 new_dirname = file.path(getwd(), fname)
 dir.create(new_dirname, showWarnings = TRUE)
 
@@ -102,19 +103,7 @@ cth <- addCellType(cth, "Lung", classify_func=function(x) {
               (x[CD47_id,] >= 1 & x[SFTA3_id,]>=1) |
               (x[NKX_id,] >= 1 & x[CD47_id,] >=1)
               })
-'''
-#define "Liver" classifier expression rules
-#doesnt express NKX2-1 and does express APOA2 or
-#doesnt express NKX2-1 and does express MSX1 or does express COL19A1 or
-#doesnt express NKX2-1 or CD47
-cth <- addCellType(cth, "Liver", classify_func=function(x) {
-              (x[NKX_id,] < 1 & x[APOA2_id,] > 1) |
-              (x[NKX_id,] < 1 & x[MSX1_id,] > 1 | x[COL19A1_id,]>1) |
-              (x[NKX_id,] < 1 & x[CD47_id,] < 1)
-              })
 
-'''
-#optional 3 state liver classification
 #define "Liver" classifier expression rules
 #doesnt express NKX2-1 and does express APOA2 or
 #doesnt express NKX2-1 and does express MSX1
@@ -217,12 +206,12 @@ diff_test_df_ps <- diff_test_res_ps[,c("GeneID", "pval", "qval")]
 pst_df_qval <- diff_test_df_ps[match(row.names(pst_df), row.names(diff_test_df_ps)),]
 pst_df_qval$GeneSum <- pst_df$GeneSum
 pst_df_qval$num_cells_expressed <- pst_df$num_cells_expressed
-top_30_expression_to_plot <- row.names(pst_df_qval[1:30,])
+top_30_expression_to_plot <- row.names(pst_df_qval[1:min(dim(pst_df_qval)[1],30),])
 source('plotting_small_text.R')
 plot_genes_in_pseudotime(ips17_BU3_data[top_30_expression_to_plot,], color_by = "State", nrow = 6, ncol = 5, cell_size = 2.4, relative_expr = F)
 ggsave(file.path(new_dirname,paste("top30_byexpression_Pseudo_sig",fname,"Pseudotime.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 14, height = 11, units = c("in"), dpi = 300)
 pst_df_qval <- pst_df_qval[order(pst_df_qval[,"qval"]),]
-top_30_qval_to_plot <- row.names(pst_df_qval[1:30,])
+top_30_qval_to_plot <- row.names(pst_df_qval[1:min(dim(pst_df_qval)[1],30),])
 plot_genes_in_pseudotime(ips17_BU3_data[top_30_qval_to_plot,], color_by = "State", nrow = 6, ncol = 5, cell_size = 2.4, relative_expr = F)
 ggsave(file.path(new_dirname,paste("top30_byqval_Pseudo_sig",fname,"Pseudotime.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 14, height = 11, units = c("in"), dpi = 300)
 #plot genes in jitter

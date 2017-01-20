@@ -12,7 +12,6 @@ library(igraph)
 
 #if using modified monocle plotting options to produce figures from the paper
 #provide path to modified plotting code https://github.com/iandriver/monocle-release/tree/master/R
-source('plotting.R')
 
 #provide name add on for file saveing
 fname="kmeans2_200_new2"
@@ -20,7 +19,7 @@ new_dirname = file.path(getwd(), fname)
 dir.create(new_dirname, showWarnings = TRUE)
 
 #read in gene cell matrix file
-fpkm_matrix <- read.delim("ips17_BU3_normalized_edgeR_counts_TMM_all_outlier_filtered_nojunk_cutoff.txt")
+fpkm_matrix <- read.delim("ips17_BU3_normalized_edgeR_counts_TMM.txt")
 
 #assign gene symbol names as row.names
 row.names(fpkm_matrix) <- fpkm_matrix$X
@@ -161,7 +160,7 @@ best_ord <- best_ord[1:150]
 ips17_BU3_data <- setOrderingFilter(ips17_BU3_data, best_ord)
 ips17_BU3_data <- reduceDimension(ips17_BU3_data, max_components=3)
 ips17_BU3_data <- orderCells(ips17_BU3_data, reverse=TRUE)
-
+source('plotting_larger_text.R')
 #plot trajectories
 plot_cell_trajectory(ips17_BU3_data, color_by="State", cell_size = 6, line_width = 1.8, show_branch_points=FALSE)
 ggsave(file.path(new_dirname,paste(fname,"cell_traj_byState.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 10, height = 8, units = c("in"), dpi = 300)
@@ -171,6 +170,8 @@ plot_cell_trajectory(ips17_BU3_data, color_by="Nkx_group", cell_size = 6, line_w
 ggsave(file.path(new_dirname,paste(fname,"cell_traj_byNkxGroup.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 10, height = 8, units = c("in"), dpi = 300)
 plot_cell_trajectory(ips17_BU3_data, color_by="Mitosis_Group", cell_size = 6, line_width = 1.8, show_branch_points=FALSE)
 ggsave(file.path(new_dirname,paste(fname,"cell_traj_byMitosisGroup.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 10, height = 8, units = c("in"), dpi = 300)
+plot_cell_trajectory(ips17_BU3_data, color_by="CellOrigin", cell_size = 6, line_width = 1.8, show_branch_points=FALSE)
+ggsave(file.path(new_dirname,paste(fname,"cell_traj_byCellOrigin.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 10, height = 8, units = c("in"), dpi = 300)
 traj <- plot_cell_trajectory(ips17_BU3_data, color_by="Pseudotime", cell_size = 6, line_width = 1.8, show_branch_points=FALSE)
 traj + scale_colour_gradient(limits=c(0, 12), low="purple", high="green")
 ggsave(file.path(new_dirname,paste(fname,"cell_traj_byPseudotime.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 10, height = 8, units = c("in"), dpi = 300)
@@ -217,6 +218,7 @@ pst_df_qval <- diff_test_df_ps[match(row.names(pst_df), row.names(diff_test_df_p
 pst_df_qval$GeneSum <- pst_df$GeneSum
 pst_df_qval$num_cells_expressed <- pst_df$num_cells_expressed
 top_30_expression_to_plot <- row.names(pst_df_qval[1:30,])
+source('plotting_small_text.R')
 plot_genes_in_pseudotime(ips17_BU3_data[top_30_expression_to_plot,], color_by = "State", nrow = 6, ncol = 5, cell_size = 2.4, relative_expr = F)
 ggsave(file.path(new_dirname,paste("top30_byexpression_Pseudo_sig",fname,"Pseudotime.pdf", sep="_")), plot = last_plot(), device = "pdf", path = NULL, scale = 1, width = 14, height = 11, units = c("in"), dpi = 300)
 pst_df_qval <- pst_df_qval[order(pst_df_qval[,"qval"]),]
